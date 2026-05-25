@@ -97,6 +97,9 @@ export const loginStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
   },
+  forgotTextDisabled: {
+    color: 'rgba(220, 240, 255, 0.48)',
+  },
   logo: {
     width: 78,
     height: 78,
@@ -146,29 +149,27 @@ export const loginStyles = StyleSheet.create({
     marginTop: 20,
   },
   passwordInputWrapper: {
-  height: 58,
-  borderRadius: 14,
-  paddingLeft: 18,
-  paddingRight: 14,
-  flexDirection: 'row',
-  alignItems: 'center',
-  backgroundColor: 'rgba(0, 20, 33, 0.62)',
-  borderWidth: 1.2,
-  borderColor: 'rgba(58, 170, 232, 0.5)',
-},
-
-passwordInput: {
-  flex: 1,
-  color: '#FFFFFF',
-  fontSize: 15,
-  fontWeight: '600',
-  paddingVertical: 0,
-},
-
-eyeButton: {
-  width: 42,
-  height: 42,
-  alignItems: 'center',
-  justifyContent: 'center',
-},
+    height: 58,
+    borderRadius: 14,
+    paddingLeft: 18,
+    paddingRight: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 20, 33, 0.62)',
+    borderWidth: 1.2,
+    borderColor: 'rgba(58, 170, 232, 0.5)',
+  },
+  passwordInput: {
+    flex: 1,
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '600',
+    paddingVertical: 0,
+  },
+  eyeButton: {
+    width: 42,
+    height: 42,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

@@ -8,6 +8,7 @@ export const LOGIN_TEXT = {
   passwordLabel: 'Password',
   passwordPlaceholder: 'Enter your password',
   forgotPassword: 'Forgot password?',
+  resettingPassword: 'Sending reset link...',
   loginButton: 'LOG IN',
   authorizedOnly: 'Authorized lifeguard personnel only',
 };

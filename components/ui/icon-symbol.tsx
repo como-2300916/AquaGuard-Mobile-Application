@@ -22,6 +22,7 @@ const MAPPING = {
   'person.fill': 'person',
   'exclamationmark.triangle.fill': 'warning',
   'battery.25': 'battery-alert',
+  'rectangle.portrait.and.arrow.right': 'logout',
 } as IconMapping;
 
 /**

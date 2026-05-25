@@ -17,8 +17,8 @@ import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import {Ionicons } from '@expo/vector-icons';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { Ionicons } from '@expo/vector-icons';
+import { sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 
 import { auth } from '../config/firebase';
 import { LOGIN_TEXT } from '../constants/login';
@@ -30,6 +30,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
 
   const handleLogin = async () => {
     const enteredEmail = email.trim().toLowerCase();
@@ -60,11 +61,30 @@ export default function LoginScreen() {
       }
 
       router.replace('/(tabs)');
-    } catch (error) {
+    } catch {
       Alert.alert(
         'Login Failed',
         'Invalid email or password. Please try again.'
       );
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    const enteredEmail = email.trim().toLowerCase();
+
+    if (!enteredEmail) {
+      Alert.alert('Email Required', 'Enter your email address so we can send a reset link.');
+      return;
+    }
+
+    try {
+      setIsResettingPassword(true);
+      await sendPasswordResetEmail(auth, enteredEmail);
+      Alert.alert('Reset Link Sent', 'Check your email for password reset instructions.');
+    } catch {
+      Alert.alert('Reset Failed', 'We could not send a reset link. Please check the email address.');
+    } finally {
+      setIsResettingPassword(false);
     }
   };
 
@@ -135,22 +155,33 @@ export default function LoginScreen() {
                             onChangeText={setPassword}
                             placeholder={LOGIN_TEXT.passwordPlaceholder}
                             placeholderTextColor="rgba(255,255,255,0.36)"
-                          secureTextEntry={!showPassword}
-                          style={styles.passwordInput}
-                        />
-                            <Pressable
-                                onPress={() => setShowPassword(!showPassword)}
-                                style={styles.eyeButton}
+                            secureTextEntry={!showPassword}
+                            style={styles.passwordInput}
+                          />
 
-                            >
-                                <Ionicons
-                                    name={showPassword ? 'eye-outline' : 'eye-off-outline'}
-                                    size={20}
-                                    color="rgba(255,255,255,0.65)"
-                                    />
-                            </Pressable>
+                          <Pressable
+                            onPress={() => setShowPassword(!showPassword)}
+                            style={styles.eyeButton}
+                          >
+                            <Ionicons
+                              name={showPassword ? 'eye-outline' : 'eye-off-outline'}
+                              size={20}
+                              color="rgba(255,255,255,0.65)"
+                            />
+                          </Pressable>
                         </View>
-                        </View>
+                      </View>
+
+                      <TouchableOpacity
+                        activeOpacity={0.76}
+                        disabled={isResettingPassword}
+                        onPress={handleForgotPassword}
+                        style={styles.forgotWrapper}
+                      >
+                        <Text style={[styles.forgotText, isResettingPassword && styles.forgotTextDisabled]}>
+                          {isResettingPassword ? LOGIN_TEXT.resettingPassword : LOGIN_TEXT.forgotPassword}
+                        </Text>
+                      </TouchableOpacity>
 
                       <TouchableOpacity
                         activeOpacity={0.88}

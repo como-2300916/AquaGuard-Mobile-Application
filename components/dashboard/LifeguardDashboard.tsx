@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { Image, Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { router } from 'expo-router';
+import { signOut } from 'firebase/auth';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { auth } from '@/config/firebase';
 import {
   ACTIVE_ALERT,
   DASHBOARD_TEXT,
@@ -10,7 +13,6 @@ import {
   GUESTS,
   LEGEND_ITEMS,
   NOTIFICATIONS,
-  REMINDERS,
   STATUS_COLORS,
   STATUS_COUNTS,
 } from '@/constants/dashboard';
@@ -26,10 +28,27 @@ export function LifeguardDashboard() {
   const selectedGuest = selectedGuestId ? GUESTS[selectedGuestId] : null;
   const isDanger = selectedGuest?.status === 'DANGER';
 
+  const handleLogout = () => {
+    Alert.alert('Log Out', 'Are you sure you want to log out?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Log Out',
+        style: 'destructive',
+        onPress: async () => {
+          await signOut(auth);
+          router.replace('/login');
+        },
+      },
+    ]);
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <DashboardHeader onNotificationsPress={() => setShowNotificationModal(true)} />
+        <DashboardHeader
+          onNotificationsPress={() => setShowNotificationModal(true)}
+          onLogoutPress={handleLogout}
+        />
         <ActiveGuestAlert />
         <GuestMonitoringMap selectedGuestId={selectedGuestId} onGuestSelect={setSelectedGuestId} />
 
@@ -53,15 +72,6 @@ export function LifeguardDashboard() {
 
           {selectedGuest ? <SelectedGuest guest={selectedGuest} /> : <SelectedGuestPlaceholder />}
         </View>
-
-        <View>
-          <Text style={styles.reminderTitle}>{DASHBOARD_TEXT.remindersTitle}</Text>
-          <View style={styles.reminderBox}>
-            {REMINDERS.map((reminder, index) => (
-              <Reminder key={reminder} text={reminder} showDivider={index > 0} />
-            ))}
-          </View>
-        </View>
       </ScrollView>
 
       <NotificationModal
@@ -72,7 +82,12 @@ export function LifeguardDashboard() {
   );
 }
 
-function DashboardHeader({ onNotificationsPress }: { onNotificationsPress: () => void }) {
+type DashboardHeaderProps = {
+  onNotificationsPress: () => void;
+  onLogoutPress: () => void;
+};
+
+function DashboardHeader({ onNotificationsPress, onLogoutPress }: DashboardHeaderProps) {
   return (
     <View style={styles.header}>
       <View style={styles.logoGroup}>
@@ -80,9 +95,23 @@ function DashboardHeader({ onNotificationsPress }: { onNotificationsPress: () =>
         <Text style={styles.resortName}>{DASHBOARD_TEXT.appName}</Text>
       </View>
 
-      <TouchableOpacity style={styles.notificationButton} onPress={onNotificationsPress}>
-        <IconSymbol name="bell.fill" size={23} color="#FFFFFF" />
-      </TouchableOpacity>
+      <View style={styles.headerActions}>
+        <TouchableOpacity
+          accessibilityLabel="Open notifications"
+          style={styles.headerIconButton}
+          onPress={onNotificationsPress}
+        >
+          <IconSymbol name="bell.fill" size={23} color="#FFFFFF" />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          accessibilityLabel="Log out"
+          style={styles.headerIconButton}
+          onPress={onLogoutPress}
+        >
+          <IconSymbol name="rectangle.portrait.and.arrow.right" size={23} color="#FFFFFF" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -226,17 +255,6 @@ function Info({ label, value, status }: InfoProps) {
       <Text style={styles.infoLabel}>{label}</Text>
       <Text style={[styles.infoValue, { color: valueColor }]}>{value}</Text>
     </View>
-  );
-}
-
-function Reminder({ text, showDivider }: { text: string; showDivider: boolean }) {
-  return (
-    <>
-      {showDivider && <View style={styles.divider} />}
-      <View style={styles.reminderItem}>
-        <Text style={styles.reminderText}>{text}</Text>
-      </View>
-    </>
   );
 }
 

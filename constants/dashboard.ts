@@ -13,7 +13,6 @@ export const DASHBOARD_TEXT = {
   selectedGuestTitle: 'SELECTED GUEST',
   selectGuestTitle: 'SELECT A GUEST',
   selectGuestHelp: 'Tap on a guest on the map to view their details.',
-  remindersTitle: 'REMINDERS',
   notificationsTitle: 'NOTIFICATIONS',
   seeAllNotifications: 'See all',
   totalGuestsLabel: 'TOTAL GUESTS',
@@ -29,7 +28,7 @@ export const ACTIVE_ALERT = {
 export const GUESTS: Record<string, Guest> = {
   '27-1': {
     markerId: '27-1',
-    guestName: 'GUEST 07',
+    guestName: 'Kenneth Adoyo',
     status: 'DANGER',
     wristbandId: '0007',
     location: 'North boundary area',
@@ -41,7 +40,7 @@ export const GUESTS: Record<string, Guest> = {
   },
   '72-1': {
     markerId: '72-1',
-    guestName: 'GUEST 08',
+    guestName: 'Sophia Malabanan',
     status: 'DANGER',
     wristbandId: '0008',
     location: 'South boundary area',
@@ -53,7 +52,7 @@ export const GUESTS: Record<string, Guest> = {
   },
   '15-10': {
     markerId: '15-10',
-    guestName: 'GUEST 03',
+    guestName: 'Carmela Aldea',
     status: 'WARNING',
     wristbandId: '0003',
     location: 'West zone edge',
@@ -65,7 +64,7 @@ export const GUESTS: Record<string, Guest> = {
   },
   '85-10': {
     markerId: '85-10',
-    guestName: 'GUEST 04',
+    guestName: 'Erin Delos Trinos',
     status: 'WARNING',
     wristbandId: '0004',
     location: 'East zone edge',
@@ -77,7 +76,7 @@ export const GUESTS: Record<string, Guest> = {
   },
   '31-25': {
     markerId: '31-25',
-    guestName: 'GUEST 01',
+    guestName: 'Reane Fines',
     status: 'SAFE',
     wristbandId: '0001',
     location: 'Main beach area',
@@ -89,7 +88,7 @@ export const GUESTS: Record<string, Guest> = {
   },
   '50-25': {
     markerId: '50-25',
-    guestName: 'GUEST 02',
+    guestName: 'Sheena Macadat',
     status: 'SAFE',
     wristbandId: '0002',
     location: 'Main beach area',
@@ -101,7 +100,7 @@ export const GUESTS: Record<string, Guest> = {
   },
   '69-28': {
     markerId: '69-28',
-    guestName: 'GUEST 05',
+    guestName: 'Ysabell Como',
     status: 'SAFE',
     wristbandId: '0005',
     location: 'North beach area',
@@ -113,7 +112,7 @@ export const GUESTS: Record<string, Guest> = {
   },
   '18-29': {
     markerId: '18-29',
-    guestName: 'GUEST 06',
+    guestName: 'Kristine Asi',
     status: 'SAFE',
     wristbandId: '0006',
     location: 'South beach area',
@@ -147,13 +146,6 @@ export const STATUS_COUNTS = (['SAFE', 'WARNING', 'DANGER'] as const).map((statu
   count: Object.values(GUESTS).filter((guest) => guest.status === status).length,
   color: status === 'DANGER' ? '#FF3030' : STATUS_COLORS[status],
 }));
-
-export const REMINDERS = [
-  'Scan the area regularly.',
-  'Watch the warning zone.',
-  'Communicate clearly with your team.',
-  'Act fast, stay safe.',
-];
 
 export const NOTIFICATIONS: Notification[] = [
   {

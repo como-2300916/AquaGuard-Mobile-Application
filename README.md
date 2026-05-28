@@ -7,10 +7,13 @@ active safety alerts, and zone activity.
 
 ```bash
 npm install
-npm start
+npm run start:clear
 ```
 
-Use the Expo terminal menu to open the app on Android, iOS, web, or Expo Go.
+The VS Code workspace clears `REACT_NATIVE_PACKAGER_HOSTNAME` for Windows
+terminals so Expo can advertise the current Wi-Fi IPv4 address. `npm start`
+uses LAN mode; if your phone is on a different network, use `npm run
+start:tunnel`.
 
 ## Main Files
 

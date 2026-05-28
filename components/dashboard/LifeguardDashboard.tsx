@@ -24,6 +24,7 @@ import { GuestMapMarker } from './GuestMapMarker';
 export function LifeguardDashboard() {
   const [selectedGuestId, setSelectedGuestId] = useState<string | null>(null);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   const selectedGuest = selectedGuestId ? GUESTS[selectedGuestId] : null;
   const isDanger = selectedGuest?.status === 'DANGER';
@@ -47,7 +48,7 @@ export function LifeguardDashboard() {
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <DashboardHeader
           onNotificationsPress={() => setShowNotificationModal(true)}
-          onLogoutPress={handleLogout}
+          onProfilePress={() => setShowProfileModal(true)}
         />
         <ActiveGuestAlert />
         <GuestMonitoringMap selectedGuestId={selectedGuestId} onGuestSelect={setSelectedGuestId} />
@@ -78,16 +79,21 @@ export function LifeguardDashboard() {
         visible={showNotificationModal}
         onClose={() => setShowNotificationModal(false)}
       />
+      <ProfileModal
+        visible={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+        onLogoutPress={handleLogout}
+      />
     </SafeAreaView>
   );
 }
 
 type DashboardHeaderProps = {
   onNotificationsPress: () => void;
-  onLogoutPress: () => void;
+  onProfilePress: () => void;
 };
 
-function DashboardHeader({ onNotificationsPress, onLogoutPress }: DashboardHeaderProps) {
+function DashboardHeader({ onNotificationsPress, onProfilePress }: DashboardHeaderProps) {
   return (
     <View style={styles.header}>
       <View style={styles.logoGroup}>
@@ -105,11 +111,11 @@ function DashboardHeader({ onNotificationsPress, onLogoutPress }: DashboardHeade
         </TouchableOpacity>
 
         <TouchableOpacity
-          accessibilityLabel="Log out"
-          style={styles.headerIconButton}
-          onPress={onLogoutPress}
+          accessibilityLabel="Open lifeguard profile"
+          style={styles.profileButton}
+          onPress={onProfilePress}
         >
-          <IconSymbol name="rectangle.portrait.and.arrow.right" size={23} color="#FFFFFF" />
+          <IconSymbol name="person.fill" size={23} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
     </View>
@@ -293,5 +299,70 @@ function NotificationModal({ visible, onClose }: NotificationModalProps) {
         </View>
       </View>
     </Modal>
+  );
+}
+
+type ProfileModalProps = {
+  visible: boolean;
+  onClose: () => void;
+  onLogoutPress: () => void;
+};
+
+function ProfileModal({ visible, onClose, onLogoutPress }: ProfileModalProps) {
+  const email = auth.currentUser?.email ?? 'lifeguard@aquaguard.com';
+
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+      <View style={styles.profileModalOverlay}>
+        <View style={styles.profileModalContent}>
+          <View style={styles.profileModalHeader}>
+            <Text style={styles.modalTitle}>{DASHBOARD_TEXT.profileTitle}</Text>
+            <TouchableOpacity onPress={onClose}>
+              <Text style={styles.modalCloseButton}>X</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.profileIdentity}>
+            <View style={styles.profileAvatar}>
+              <IconSymbol name="person.fill" size={38} color="#FFFFFF" />
+            </View>
+            <View style={styles.profileDetails}>
+              <Text style={styles.profileName}>{DASHBOARD_TEXT.lifeguardName}</Text>
+            </View>
+          </View>
+
+          <View style={styles.accountInfoSection}>
+            <Text style={styles.accountInfoTitle}>{DASHBOARD_TEXT.accountInformationTitle}</Text>
+            <ProfileInfoRow label="Email Address" value={email} />
+            <ProfileInfoRow label="Lifeguard ID" value={DASHBOARD_TEXT.lifeguardId} />
+            <ProfileInfoRow label="Role" value={DASHBOARD_TEXT.lifeguardRole} />
+            <TouchableOpacity
+              accessibilityLabel="Change password"
+              style={styles.changePasswordButton}
+            >
+              <Text style={styles.changePasswordText}>Change Password</Text>
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity
+            accessibilityLabel="Log out"
+            style={styles.profileLogoutButton}
+            onPress={onLogoutPress}
+          >
+            <IconSymbol name="rectangle.portrait.and.arrow.right" size={20} color="#FFFFFF" />
+            <Text style={styles.profileLogoutText}>Log Out</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+function ProfileInfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.profileInfoRow}>
+      <Text style={styles.profileInfoLabel}>{label}</Text>
+      <Text style={styles.profileInfoValue}>{value}</Text>
+    </View>
   );
 }
